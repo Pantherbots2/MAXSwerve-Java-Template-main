@@ -85,7 +85,7 @@ public class RobotContainer {
     public void setPosition(double Position) {
         l16Servo.set(Position);
     }
-
+/*   Make the actuator extend */
     public void extend() {
         m_OperatorController.rightTrigger().onTrue(Position.set,1));
             l16Servo.set(2.0);
@@ -93,7 +93,7 @@ public class RobotContainer {
             l16Servo.set(1);
     }
 
-      // ReleaseServo
+/*    Make the Acutator Retract */
       m_OperatorController.leftTrigger().onTrue(1);
       l16Servo.set(0);
       m_OperatorController.leftTrigger().onFalse(0);
