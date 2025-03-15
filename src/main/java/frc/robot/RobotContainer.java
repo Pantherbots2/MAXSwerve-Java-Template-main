@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+
+import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -64,9 +67,40 @@ public class RobotContainer {
      private final Trigger operatorLeftStickDown = new Trigger(()->m_OperatorController.getRawAxis(XboxController.Axis.kLeftY.value) < -.3);
      private final Trigger operatorRightStickUp = new Trigger(()->m_OperatorController.getRawAxis(XboxController.Axis.kRightY.value) > .3);
      private final Trigger operatorRightStickDown = new Trigger(()->m_OperatorController.getRawAxis(XboxController.Axis.kRightY.value) < -.3);
-     //private final Trigger operatorRightTrigger = new Trigger(()-> m_OperatorController.getRawAxis(XboxController.Axis.kRightTrigger.value) > .1);
-     //private final Trigger operatorLeftTrigger = new Trigger(()-> m_OperatorController.getRawAxis(XboxController.Axis.kLeftTrigger.value) > .1);
- 
+     private final Trigger operatorRightTrigger = new Trigger(()-> m_OperatorController.getRawAxis(XboxController.Axis.kRightTrigger.value) > .1);
+     private final Trigger operatorLeftTrigger = new Trigger(()-> m_OperatorController.getRawAxis(XboxController.Axis.kLeftTrigger.value) > .1);
+     
+     
+     public class LinearServoL16 {
+
+        private Servo l16Servo;
+        private final double MAX_PWM = 2.0;
+        private final double MIN_PWM = 1.0;
+
+        public LinearServoL16(int 0);
+            l16Servo = new Servo(0);
+        l16Servo.setBounds(MAX_PWM, 1.8, 1.5, 1.2, MIN_PWM);
+    }
+
+    public void setPosition(double Position) {
+        l16Servo.set(Position);
+    }
+
+    public void extend() {
+        m_OperatorController.rightTrigger().onTrue(Position.set,1));
+            l16Servo.set(2.0);
+        m_OperatorController.rightTrigger().onfalse(0);
+            l16Servo.set(1);
+    }
+
+      // ReleaseServo
+      m_OperatorController.leftTrigger().onTrue(1);
+      l16Servo.set(0);
+      m_OperatorController.leftTrigger().onFalse(0);
+      l16Servo.set(1);
+    }
+
+
  
     /**
     * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -137,7 +171,7 @@ public class RobotContainer {
     // Driver Controls
     //-----------------------------------------------
     // Coral Arm
-    new JoystickButton(m_driverController, Button.kCircle.value)
+ /*   new JoystickButton(m_driverController, Button.kCircle.value)
         .whileTrue(new StartEndCommand(
             () -> coralArm.setMotorVoltage(4),
             () -> coralArm.stopMotor(),
@@ -159,6 +193,26 @@ public class RobotContainer {
             () -> coralElevator.stopMotor(),
             coralElevator));   
     }
+*/
+
+    m_OperatorController.b().whileTrue(new StartEndCommand(
+        () -> coralArm.setMotorVoltage(4),
+        () -> coralArm.stopMotor(),
+        coralArm));
+    m_OperatorController.x().whileTrue(new StartEndCommand(
+            () -> coralArm.setMotorVoltage(-4),
+            () -> coralArm.stopMotor(),
+            coralArm));
+    // Coral Elevator
+    m_OperatorController.y().whileTrue(new StartEndCommand(
+        () -> coralElevator.setMotorVoltage(-12),
+        () -> coralElevator.stopMotor(),
+        coralElevator));
+    m_OperatorController.a().whileTrue(new StartEndCommand(
+            () -> coralElevator.setMotorVoltage(12),
+            () -> coralElevator.stopMotor(),
+            coralElevator));   
+    }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -167,7 +221,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
-    return new DriveForward(m_robotDrive, 0.1);
+    return new DriveForward(m_robotDrive, 0.07);
     /*
     // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
